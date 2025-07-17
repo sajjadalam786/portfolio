@@ -1,7 +1,14 @@
+import Header from "@/app/components/header";
+import Hero from "@/app/components/hero";
+
 export default function Home() {
   return (
     <>
-      <h1>Sajjad</h1>
+      <Header/>
+      <main className="px-10 mt-10">
+        <Hero/>
+      </main>
+      {/* <Footer/> */}
     </>
   );
 }
