@@ -5,7 +5,7 @@ export default function Hero(){
         <>
             <div className="flex justify-center items-center">
                 <div className="w-1/2">
-                 <Image src="/vercel.svg"
+                 <Image src="/office.jpeg"
                   width={500}
                   height={500}
                   objectFit="contain"
@@ -16,7 +16,7 @@ export default function Hero(){
                         I am a <span className="text-[#00df9a]">Frontend Developer</span>
                     </h1>
                     <p className="py-6">
-                        I am a frontend developer with 2+ years of experience. I build responsive websites using React.js.
+                        I am a Full Stack developer with 5+ years of experience. I build responsive websites using React.js.
                     </p>
                     <button className="bg-[#00df9a] px-5 py-3 rounded-md">
                         Contact Me
