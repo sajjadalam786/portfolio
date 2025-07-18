@@ -2,9 +2,7 @@ import Link from "next/link"
 
 export default function Header() {
 
-
-    //dynamic code here like functions and variable useState's etc etc
-
+//dynamic code here like functions and variable useState's etc etc
 
   return (
 
@@ -13,9 +11,9 @@ export default function Header() {
             
             <li><Link href="/">Think Again..
             </Link></li>
-            <li><Link href="#">My Project</Link></li>
-            <li><Link href="#">Skills</Link></li>
-            <li><Link href="#">Contact Us</Link></li>
+            <li><Link href="/myproject">My Project</Link></li>
+            <li><Link href="/skills">Skills</Link></li>
+            <li><Link href="/contact">Contact Us</Link></li>
         </ul>
      </nav>
      
