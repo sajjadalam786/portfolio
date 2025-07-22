@@ -1,0 +1,82 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # Updated to latest version
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4  # Updated to latest version
+      with:
+        node-version: '22'  # Updated to match your server version
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build project
+      run: npm run build
+      
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3  # Updated version
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          # Project directory mein jao (updated path)
+          cd /root/portfolio
+          
+          # Latest code pull karo
+          git pull origin main
+          
+          # Dependencies install karo
+          npm ci --production
+          
+          # Environment variables setup karo
+          echo "NODE_ENV=production" > .env.production
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.production
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
+          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
+          echo "PORT=3001" >> .env.production
+          
+          # Test MongoDB connection
+          node -e "
+          const mongoose = require('mongoose');
+          require('dotenv').config({ path: '.env.production' });
+          console.log('Testing MongoDB connection...');
+          mongoose.connect(process.env.MONGODB_URI, { 
+            serverSelectionTimeoutMS: 10000,
+            socketTimeoutMS: 45000,
+          })
+            .then(() => { 
+              console.log('✅ MongoDB connected successfully!'); 
+              process.exit(0); 
+            })
+            .catch((err) => { 
+              console.error('❌ MongoDB connection failed:', err.message); 
+              process.exit(1); 
+            });
+          "
+          
+          # Project build karo
+          npm run build
+          
+          # PM2 se application restart karo
+          pm2 restart sajjad-portfolio || pm2 start ecosystem.config.js
+          
+          # PM2 configuration save karo
+          pm2 save
+          
+          # Application status check karo
+          pm2 status sajjad-portfolio
